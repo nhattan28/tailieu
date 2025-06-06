@@ -14,18 +14,34 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      animation: gradientBackground 15s ease infinite;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+      background-size: 400% 400%;
+    }
+
+    @keyframes gradientBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     .topbar {
       position: sticky;
       top: 0;
-      background-color: while;
+      background-color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
       padding: 0.5rem;
       z-index: 100;
       width: 100%;
       gap: 0.5rem;
+      backdrop-filter: blur(8px);
     }
 
     .btn {
@@ -61,7 +77,7 @@
 
     @media (min-width: 601px) {
       .grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 x 5 = 20 thẻ */
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
@@ -69,10 +85,11 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 1rem;
-      background: #f9f9f9;
+      background: #ffffffcc;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      backdrop-filter: blur(3px);
     }
 
     .file-card h3 {
@@ -80,10 +97,10 @@
       margin-bottom: 0.5rem;
       word-break: break-word;
     }
-
+    
     .file-card button {
-      background-color: #4a90e2;
-      color: white;
+      animation: gradientBackground 15s ease infinite;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);      color: white;
       margin-top: 0.5rem;
       padding: 0.4rem 0.8rem;
       font-size: 0.9rem;
@@ -91,6 +108,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
 
     .viewer-overlay {
       position: fixed;
@@ -153,7 +171,6 @@
   </div>
 
   <script>
-    // Nút chuyển trang
     function chuyenTrang() {
       const current = window.location.pathname;
       if (current.includes("hoc.html")) {
@@ -163,15 +180,13 @@
       }
     }
 
-    // Đặt biểu tượng cho nút
     const btn = document.querySelector(".btn");
     if (window.location.pathname.includes("hoc.html")) {
-      btn.textContent = "📂"; // Quay lại chia sẽ
+      btn.textContent = "📂";
     } else {
-      btn.textContent = "📖"; // Vào mục học
+      btn.textContent = "📖";
     }
 
-    // Load tài liệu từ Google Drive
     const folderIds = [
       "1xGWHzz4qOlZNe5AQxS9HDZBqw7afv-qW",
     ];
