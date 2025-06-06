@@ -156,7 +156,7 @@
 
   <div class="topbar">
     <button class="btn" onclick="chuyenTrang()"></button>
-    <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu..." class="search-bar">
+    <input type="text" id="searchInput" placeholder="Tìm kiếm môn học..." class="search-bar">
   </div>
 
   <main>
@@ -172,22 +172,29 @@
 
   <script>
     // Nút chuyển trang
-    function chuyenTrang() {
-      const current = window.location.pathname;
-      if (current.includes("hoc.html")) {
-        window.location.href = "index.html";
-      } else {
-        window.location.href = "hoc.html";
-      }
-    }
+ function chuyenTrang() {
+    const current = window.location.pathname;
 
-    // Đặt biểu tượng cho nút
-    const btn = document.querySelector(".btn");
-    if (window.location.pathname.includes("hoc.html")) {
-      btn.textContent = "📂"; // Quay lại chia sẽ
+    if (current.includes("hoc.html")) {
+      window.location.href = "vanban.html";
+    } else if (current.includes("vanban.html")) {
+      window.location.href = "index.html";
     } else {
-      btn.textContent = "📖"; // Vào mục học
+      window.location.href = "hoc.html";
     }
+  }
+
+  // Đặt biểu tượng cho nút chuyển trang
+  const btn = document.querySelector(".btn");
+  const currentPath = window.location.pathname;
+
+  if (currentPath.includes("hoc.html")) {
+    btn.textContent = "📂"; // Đang ở học → sắp tới văn bản
+  } else if (currentPath.includes("vanban.html")) {
+    btn.textContent = "📝"; // Đang ở văn bản → sắp tới trang chính
+  } else {
+    btn.textContent = "🎓"; // Trang chính (index) → sắp tới học
+  }
 
     // Load tài liệu từ Google Drive
     const folderIds = [
