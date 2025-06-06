@@ -171,21 +171,47 @@
   </div>
 
   <script>
-    function chuyenTrang() {
-      const current = window.location.pathname;
-      if (current.includes("hoc.html")) {
-        window.location.href = "index.html";
-      } else {
-        window.location.href = "hoc.html";
-      }
-    }
+// Function to navigate between pages
+function chuyenTrang() {
+  const current = window.location.pathname;
 
-    const btn = document.querySelector(".btn");
-    if (window.location.pathname.includes("hoc.html")) {
-      btn.textContent = "📂";
-    } else {
-      btn.textContent = "📖";
-    }
+  // If on index.html or root "/", go to hoc.html
+  if (current.includes("index.html") || current === "/") {
+    window.location.href = "hoc.html";
+  }
+  // If on hoc.html, go to vanban.html
+  else if (current.includes("hoc.html")) {
+    window.location.href = "vanban.html";
+  }
+  // If on vanban.html, go back to index.html
+  else if (current.includes("vanban.html")) {
+    window.location.href = "index.html";
+  }
+  // If undefined or any other path, default to index.html
+  else {
+    window.location.href = "index.html";
+  }
+}
+
+// Set icon based on current page and default to index.html icon if not recognized
+const btn = document.querySelector(".btn");
+const currentPath = window.location.pathname;
+
+// Default to index.html icon if no valid path
+if (currentPath.includes("index.html") || currentPath === "/") {
+  btn.textContent = "🎓"; // On main page
+} else if (currentPath.includes("hoc.html")) {
+  btn.textContent = "📂"; // On hoc page
+} else if (currentPath.includes("vanban.html")) {
+  btn.textContent = "📝"; // On vanban page
+} else {
+  btn.textContent = "🎓"; // Default to index.html icon
+}
+
+// Optional: Redirect to index.html on page load if current path is invalid
+if (!currentPath.includes("index.html") && !currentPath.includes("hoc.html") && !currentPath.includes("vanban.html")) {
+  window.location.href = "index.html";
+}
 
     const folderIds = [
       "1xGWHzz4qOlZNe5AQxS9HDZBqw7afv-qW",
