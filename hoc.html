@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Học tập</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <select id="pageSelect" class="dropdown-menu">
+      <option value="index.html">📁 Tất cả</option>
+      <option value="hoc.html">🎓 Học tập</option>
+      <option value="vanban.html">📝 Văn bản</option>
+      <option value="chiase.html">🔗 Chia sẻ</option>
+    </select>
+    <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm môn học..." class="search-bar">
+      <span id="fileCount" style="white-space: nowrap; font-weight: bold; color: #333;"></span>
+    </div>
+  </div>
+
+  <main><div id="fileList" class="grid"></div></main>
+
+  <div id="viewerOverlay" class="viewer-overlay hidden">
+    <div class="viewer-content">
+      <span id="closeViewer">&times;</span>
+      <iframe id="viewerFrame" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    const folderIds = [
+      "1HkYduo_gTedpk7Kp3kqR_LERHuoPp6CB",
+      "1KxbqbqlcWQ1tV_a5IaFe-YTlwLqNjg20",
+      "1p913hDh98xc2YakoYZfmXBbxHjUDYAm2"
+    ];
+    const apiKey = "AIzaSyCu6BDhyYqOj0AVa2M5rr1dqBKJ_9nSQS4";
+
+    async function loadFiles() {
+      let allFiles = [];
+      for (const folderId of folderIds) {
+        const res = await fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${apiKey}`);
+        const data = await res.json();
+        allFiles = allFiles.concat(data.files || []);
+      }
+      displayFiles(allFiles);
+    }
+
+    function displayFiles(files) {
+      const list = document.getElementById("fileList");
+      const fileCount = document.getElementById("fileCount");
+      list.innerHTML = "";
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+
+      const filteredFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
+      fileCount.textContent = `${filteredFiles.length}`;
+
+      filteredFiles.forEach(file => {
+        const viewerUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+        const card = document.createElement("div");
+        card.className = "file-card";
+        card.innerHTML = `<h3>${file.name}</h3><button onclick="openViewer('${viewerUrl}')">👁️ Xem</button>`;
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", loadFiles);
+    window.onload = loadFiles;
+
+    function openViewer(url) {
+      document.getElementById("viewerFrame").src = url;
+      document.getElementById("viewerOverlay").classList.remove("hidden");
+      document.getElementById("externalLink").href = url.replace("/preview", "/view");
+    }
+
+    document.getElementById("closeViewer").onclick = () => {
+      document.getElementById("viewerFrame").src = "";
+      document.getElementById("viewerOverlay").classList.add("hidden");
+    };
+
+    document.getElementById("pageSelect").addEventListener("change", function () {
+      const selected = this.value;
+      if (selected) window.location.href = selected;
+    });
+
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+    document.getElementById("pageSelect").value = currentPage;
+  </script>
+</body>
+</html>
