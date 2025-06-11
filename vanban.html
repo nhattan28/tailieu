@@ -11,7 +11,7 @@
     <select id="pageSelect" class="dropdown-menu">
       <option value="index.html">📁 Tất cả</option>
       <option value="hoc.html">🎓 Học tập</option>
-      <option value="vanban.html">📝 Văn bản</option>
+      <option value="vanban.html" selected>📝 Văn bản</option>
       <option value="chiase.html">🔗 Chia sẻ</option>
     </select>
     <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
@@ -20,7 +20,9 @@
     </div>
   </div>
 
-  <main><div id="fileList" class="grid"></div></main>
+  <main>
+    <div id="fileList" class="grid"></div>
+  </main>
 
   <div id="viewerOverlay" class="viewer-overlay hidden">
     <div class="viewer-content">
@@ -30,9 +32,9 @@
   </div>
 
   <script>
-   const folderIds = [
-  "1XDTi79waBP9Rga8xzk9WVmOsINXIiWDE"
-];
+    const folderIds = [
+      "1XDTi79waBP9Rga8xzk9WVmOsINXIiWDE"
+    ];
     const apiKey = "AIzaSyCu6BDhyYqOj0AVa2M5rr1dqBKJ_9nSQS4";
 
     async function loadFiles() {
@@ -45,13 +47,23 @@
       displayFiles(allFiles);
     }
 
+    function normalizeText(text) {
+      return text.toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
     function displayFiles(files) {
       const list = document.getElementById("fileList");
       const fileCount = document.getElementById("fileCount");
       list.innerHTML = "";
-      const keyword = document.getElementById("searchInput").value.toLowerCase();
 
-      const filteredFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
+      const keywordRaw = document.getElementById("searchInput").value;
+      const keyword = normalizeText(keywordRaw);
+
+      const filteredFiles = files.filter(file => {
+        const fileName = normalizeText(file.name);
+        return fileName.includes(keyword);
+      });
+
       fileCount.textContent = `${filteredFiles.length}`;
 
       filteredFiles.forEach(file => {
@@ -63,19 +75,17 @@
       });
     }
 
-    document.getElementById("searchInput").addEventListener("input", loadFiles);
-    window.onload = loadFiles;
-
     function openViewer(url) {
       document.getElementById("viewerFrame").src = url;
       document.getElementById("viewerOverlay").classList.remove("hidden");
-      document.getElementById("externalLink").href = url.replace("/preview", "/view");
     }
 
     document.getElementById("closeViewer").onclick = () => {
       document.getElementById("viewerFrame").src = "";
       document.getElementById("viewerOverlay").classList.add("hidden");
     };
+
+    document.getElementById("searchInput").addEventListener("input", loadFiles);
 
     document.getElementById("pageSelect").addEventListener("change", function () {
       const selected = this.value;
@@ -84,6 +94,8 @@
 
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     document.getElementById("pageSelect").value = currentPage;
+
+    window.onload = loadFiles;
   </script>
 </body>
 </html>
