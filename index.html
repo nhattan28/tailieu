@@ -34,13 +34,11 @@
 
   <script>
     const folderIds = [
-  "1y9KoEdXczd7qv9MEoQCVMPeF8H9-Pjxw",
-    "1HkYduo_gTedpk7Kp3kqR_LERHuoPp6CB",
-  "1KxbqbqlcWQ1tV_a5IaFe-YTlwLqNjg20",
-  "1p913hDh98xc2YakoYZfmXBbxHjUDYAm2",
-    "1XDTi79waBP9Rga8xzk9WVmOsINXIiWDE"
-
-  
+      "1y9KoEdXczd7qv9MEoQCVMPeF8H9-Pjxw",
+      "1HkYduo_gTedpk7Kp3kqR_LERHuoPp6CB",
+      "1KxbqbqlcWQ1tV_a5IaFe-YTlwLqNjg20",
+      "1p913hDh98xc2YakoYZfmXBbxHjUDYAm2",
+      "1XDTi79waBP9Rga8xzk9WVmOsINXIiWDE"
     ];
     const apiKey = "AIzaSyCu6BDhyYqOj0AVa2M5rr1dqBKJ_9nSQS4";
 
@@ -54,13 +52,23 @@
       displayFiles(allFiles);
     }
 
+    function normalizeText(text) {
+      return text.toLowerCase().replace(/\s+/g, ' ').trim(); // bỏ khoảng trắng dư và viết thường
+    }
+
     function displayFiles(files) {
       const list = document.getElementById("fileList");
       const fileCount = document.getElementById("fileCount");
       list.innerHTML = "";
-      const keyword = document.getElementById("searchInput").value.toLowerCase();
 
-      const filteredFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
+      const keywordRaw = document.getElementById("searchInput").value;
+      const keyword = normalizeText(keywordRaw);
+
+      const filteredFiles = files.filter(file => {
+        const fileName = normalizeText(file.name);
+        return fileName.includes(keyword);
+      });
+
       fileCount.textContent = `${filteredFiles.length}`;
 
       filteredFiles.forEach(file => {
