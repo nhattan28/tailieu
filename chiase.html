@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chia sẽ</title>
+  <title>Chia sẻ</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -30,10 +30,9 @@
   </div>
 
   <script>
- const folderIds = [
-  "1y9KoEdXczd7qv9MEoQCVMPeF8H9-Pjxw"
-];
+    const folderIds = ["1y9KoEdXczd7qv9MEoQCVMPeF8H9-Pjxw"];
     const apiKey = "AIzaSyCu6BDhyYqOj0AVa2M5rr1dqBKJ_9nSQS4";
+    let cachedFiles = []; // Dữ liệu cache
 
     async function loadFiles() {
       let allFiles = [];
@@ -42,34 +41,42 @@
         const data = await res.json();
         allFiles = allFiles.concat(data.files || []);
       }
-      displayFiles(allFiles);
+      cachedFiles = allFiles;
+      displayFiles(cachedFiles);
     }
 
     function displayFiles(files) {
       const list = document.getElementById("fileList");
       const fileCount = document.getElementById("fileCount");
       list.innerHTML = "";
-      const keyword = document.getElementById("searchInput").value.toLowerCase();
 
-      const filteredFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
-      fileCount.textContent = `${filteredFiles.length}`;
+      const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+      const filtered = files.filter(file => file.name.toLowerCase().includes(keyword));
+      fileCount.textContent = `${filtered.length} tài liệu`;
 
-      filteredFiles.forEach(file => {
+      if (filtered.length === 0) {
+        list.innerHTML = "<p>😢 Không tìm thấy tài liệu phù hợp.</p>";
+        return;
+      }
+
+      filtered.forEach(file => {
         const viewerUrl = `https://drive.google.com/file/d/${file.id}/preview`;
         const card = document.createElement("div");
         card.className = "file-card";
-        card.innerHTML = `<h3>${file.name}</h3><button onclick="openViewer('${viewerUrl}')">👁️ Xem</button>`;
+        card.innerHTML = `
+          <h3>${file.name}</h3>
+          <button onclick="openViewer('${viewerUrl}')">👁️ Xem</button>
+        `;
         list.appendChild(card);
       });
     }
 
-    document.getElementById("searchInput").addEventListener("input", loadFiles);
+    document.getElementById("searchInput").addEventListener("input", () => displayFiles(cachedFiles));
     window.onload = loadFiles;
 
     function openViewer(url) {
       document.getElementById("viewerFrame").src = url;
       document.getElementById("viewerOverlay").classList.remove("hidden");
-      document.getElementById("externalLink").href = url.replace("/preview", "/view");
     }
 
     document.getElementById("closeViewer").onclick = () => {
